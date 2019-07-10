@@ -1,0 +1,54 @@
+{
+  "name": "iru",
+  "version": "0.0.0",
+  "author": "Luis Pedro Toloy @LuisPe",
+  "bin": {
+    "iru": "./bin/run"
+  },
+  "bugs": "https://github.com/LuisPe/iru/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.15",
+    "@oclif/config": "^1.13.0",
+    "@oclif/plugin-help": "^2.2.0",
+    "@types/inquirer": "^6.0.3",
+    "inquirer": "^6.4.1",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.0",
+    "@types/node": "^10.14.9",
+    "globby": "^8.0.2",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/LuisPe/iru",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "iru",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "LuisPe/iru",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}
