@@ -17,6 +17,7 @@ export default class Create extends Command {
   };
 
   async run() {
+    let responses: any;
     let resp = {
       nameAPI: "",
       version: "",
@@ -35,29 +36,36 @@ export default class Create extends Command {
     let framework = flags.framework;
     let architecture = flags.architecture;
     let confirm;
-    resp.nameAPI = await inquirer.prompt([
+
+    responses = await inquirer.prompt([
       {
         name: "nameApi",
         default: args.apiname,
         message: `Press ^C at any time to quit.\napi name:`
       }
     ]);
-    resp.version = await inquirer.prompt([
+    resp.nameAPI = responses.nameAPI;
+
+    responses = await inquirer.prompt([
       {
         name: "version",
         default: "0.0.0",
         message: `version:`
       }
     ]);
-    resp.description = await inquirer.prompt([
+    resp.version = responses.version;
+
+    responses = await inquirer.prompt([
       {
         name: "description",
         default: "",
         message: `description:`
       }
     ]);
+    resp.description = responses.description;
+
     if (!framework) {
-      resp.framework = await inquirer.prompt([
+      responses = await inquirer.prompt([
         {
           name: "framework",
           message:
@@ -67,15 +75,19 @@ export default class Create extends Command {
         }
       ]);
     }
-    resp.entryPoint = await inquirer.prompt([
+    resp.framework = responses.framework;
+
+    responses = await inquirer.prompt([
       {
         name: "entryPoint",
         default: "main.js",
         message: `entry ponint API:`
       }
     ]);
+    resp.entryPoint = responses.entryPoint;
+
     if (!architecture) {
-      resp.architecture = await inquirer.prompt([
+      responses = await inquirer.prompt([
         {
           name: "architecture",
           message:
@@ -85,34 +97,43 @@ export default class Create extends Command {
         }
       ]);
     }
-    resp.gitRepository = await inquirer.prompt([
+    resp.architecture = responses.architecture;
+
+    responses = await inquirer.prompt([
       {
         name: "gitRepository",
         default: "",
         message: `git repository API:`
       }
     ]);
-    resp.keywords = await inquirer.prompt([
+    resp.gitRepository = responses.gitRepository;
+
+    responses = await inquirer.prompt([
       {
         name: "keywords",
         default: "iru, CLI, NodeJs, API",
         message: `keywords:`
       }
     ]);
-    resp.author = await inquirer.prompt([
+    resp.keywords = responses.keywords;
+
+    responses = await inquirer.prompt([
       {
         name: "author",
         default: "iru CLI, created for LuisPe <luispedrotoloy@gmail.com>",
         message: `author:`
       }
     ]);
-    resp.license = await inquirer.prompt([
+    resp.author = responses.author;
+
+    responses = await inquirer.prompt([
       {
         name: "license",
         default: "ISC",
         message: `license:`
       }
     ]);
+    resp.license = responses.license;
 
     this.log(`These were your entered values:`);
     this.log(`name: ${resp.nameAPI}`);
