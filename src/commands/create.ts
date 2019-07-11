@@ -1,6 +1,7 @@
 import { Command, flags } from "@oclif/command";
 import cli from "cli-ux";
 import * as inquirer from "inquirer";
+import chalk from "chalk";
 import { mkdir } from "fs";
 import { dirname } from "path";
 
@@ -39,7 +40,7 @@ export default class Create extends Command {
 
     responses = await inquirer.prompt([
       {
-        name: "nameApi",
+        name: "nameAPI",
         default: args.apiname,
         message: `Press ^C at any time to quit.\napi name:`
       }
@@ -134,29 +135,36 @@ export default class Create extends Command {
       }
     ]);
     resp.license = responses.license;
-
-    this.log(`These were your entered values:`);
-    this.log(`name: ${resp.nameAPI}`);
-    this.log(`version: ${resp.version}`);
-    this.log(`description: ${resp.description}`);
-    this.log(`framework: ${resp.framework}`);
-    this.log(`entry point: ${resp.entryPoint}`);
-    this.log(`architecture/protocol: ${resp.architecture}`);
-    this.log(`git repository: ${resp.gitRepository}`);
-    this.log(`keywords: ${resp.keywords}`);
-    this.log(`author: ${resp.author}`);
-    this.log(`license: ${resp.license}`);
+    this.log(`${chalk.blue.bold("These were your entered values:")}
+name: ${chalk.blue.bold(resp.nameAPI)}
+version: ${chalk.blue.bold(resp.version)}
+description: ${chalk.blue.bold(resp.description)}
+framework: ${chalk.blue.bold(resp.framework)}
+entry point: ${chalk.blue.bold(resp.entryPoint)}
+architecture/protocol: ${chalk.blue.bold(resp.architecture)}
+git repository: ${chalk.blue.bold(resp.gitRepository)}
+keywords: ${chalk.blue.bold(resp.keywords)}
+author: ${chalk.blue.bold(resp.author)}
+license: ${chalk.blue.bold(resp.license)}
+    `);
     confirm = await cli.confirm(`It's Ok? (Y/n)`);
     if (confirm) {
       let path = dirname(__dirname);
       mkdir(`${path}/${resp.nameAPI}`, err => {
         if (err) {
-          this.exit(1);
+          this.error(
+            new Error(
+              `${chalk.green.bold(
+                "The project could not be created verify that your current directory does not have a folder with the same name"
+              )}`
+            )
+          );
         }
-        this.log(`${resp.nameAPI} created!`);
+        this.log(`${chalk.blue.bold(resp.nameAPI)} created!`);
       });
     } else {
       this.exit(1);
     }
+    this.log(chalk.blue.bold("Thank you for use Iru CLI"));
   }
 }

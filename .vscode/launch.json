@@ -8,9 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/bin/run create content-api",
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/lib/**/*.js"]
+      "program": "${workspaceFolder}/src/commands/pruebas.js"
     }
   ]
 }
