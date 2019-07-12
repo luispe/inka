@@ -160,11 +160,32 @@ license: ${chalk.blue.bold(resp.license)}
             )
           );
         }
-        this.log(`${chalk.blue.bold(resp.nameAPI)} created!`);
+        this.log();
+        this.log("Initialized a git repository.");
+        this.log();
+        this.log(`Success! Created ${resp.nameAPI} at ${path}`);
+        this.log("Inside that directory, you can run commands:");
+        this.log();
+        this.log(
+          `  ${chalk.cyan("npm start")}\n  Start the development server.`
+        );
+        this.log();
+        this.log(
+          `  ${chalk.cyan(
+            "npm build"
+          )}\n  Bundles the app into static files for production.`
+        );
+        this.log();
+        this.log("We suggest that you begin by typing:");
+        this.log();
+        this.log(`  ${chalk.cyan(`cd `)}${resp.nameAPI}`);
+        this.log(`  ${chalk.cyan("npm start")}`);
+        this.log();
+        this.log("Happy coding!");
+        this.log();
       });
     } else {
       this.exit(1);
     }
-    this.log(chalk.blue.bold("Thank you for use Iru CLI"));
   }
 }
