@@ -1,55 +1,35 @@
 {
-  "name": "iru",
-  "version": "0.0.0",
-  "author": "Luis Pedro Toloy @LuisPe",
-  "bin": {
-    "iru": "./bin/run"
-  },
-  "bugs": "https://github.com/LuisPe/iru/issues",
-  "dependencies": {
-    "@oclif/command": "^1.5.15",
-    "@oclif/config": "^1.13.0",
-    "@oclif/plugin-help": "^2.2.0",
-    "@types/inquirer": "^6.0.3",
-    "chalk": "^2.4.2",
-    "inquirer": "^6.4.1",
-    "tslib": "^1.10.0"
-  },
-  "devDependencies": {
-    "@oclif/dev-cli": "^1.22.0",
-    "@types/node": "^10.14.9",
-    "globby": "^8.0.2",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.2"
-  },
-  "engines": {
-    "node": ">=8.0.0"
-  },
-  "files": [
-    "/bin",
-    "/lib",
-    "/npm-shrinkwrap.json",
-    "/oclif.manifest.json"
-  ],
-  "homepage": "https://github.com/LuisPe/iru",
-  "keywords": [
-    "oclif"
-  ],
-  "license": "MIT",
-  "main": "lib/index.js",
-  "oclif": {
-    "commands": "./lib/commands",
-    "bin": "iru",
-    "plugins": [
-      "@oclif/plugin-help"
-    ]
-  },
-  "repository": "LuisPe/iru",
+  "name": "inka",
+  "version": "0.0.1",
+  "description": "Inka is a CLI created in NodeJs to facilitate and speed up the creation of API in different architectures trying to pursue the best practices of software development.",
+  "main": "index.js",
   "scripts": {
-    "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "test": "echo NO TESTS",
-    "version": "oclif-dev readme && git add README.md"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "types": "lib/index.d.ts"
+  "bin": {
+    "inka": "./index.js"
+  },
+  "keywords": [
+    "cli",
+    "nodejs",
+    "API",
+    "Koa",
+    "express",
+    "graphql",
+    "rest"
+  ],
+  "author": "LuisPe <luispedrotoloy@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "colors": "^1.3.3",
+    "cross-spawn": "^6.0.5",
+    "figlet": "^1.2.3",
+    "inquirer": "^6.5.0",
+    "lodash": "^4.17.14",
+    "minimist": "^1.2.0",
+    "touch": "^3.1.0"
+  }
 }
