@@ -8,7 +8,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/src/commands/pruebas.js"
+      "program": "${workspaceFolder}/index.js",
+      "console": "integratedTerminal"
     }
   ]
 }
