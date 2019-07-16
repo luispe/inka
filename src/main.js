@@ -74,6 +74,32 @@ async function initGit(options) {
   return;
 }
 
+async function msgInit(options) {
+  console.log();
+  console.log("Initialized a git repository.");
+  console.log();
+  console.log(`Success! Created project at ${options.targetDirectory}`);
+  console.log("Inside that directory, you can run commands:");
+  console.log();
+  console.log(
+    chalk.cyan("   npm start"),
+    "\n     Start the development server."
+  );
+  console.log();
+  console.log(
+    chalk.cyan("   npm build"),
+    "\n      Bundles the app into static files for production."
+  );
+  console.log();
+  console.log("We suggest that you begin by typing:");
+  console.log();
+  console.log(chalk.cyan("   cd "), `${options.targetDirectory}`);
+  console.log(chalk.cyan("   npm start"));
+  console.log();
+  console.log("Happy coding!");
+  console.log();
+}
+
 export async function createProject(options) {
   options = {
     ...options,
@@ -140,5 +166,6 @@ export async function createProject(options) {
 
   await tasks.run();
   console.log("%s Project ready", chalk.green.bold("DONE"));
+  msgInit(options);
   return true;
 }
