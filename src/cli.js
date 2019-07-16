@@ -28,7 +28,8 @@ function parseArgumentsIntoOptions(rawArgs) {
 }
 
 async function promptForMissingOptions(options) {
-  const defaultTemplate = "javascript";
+  const defaultTemplate = "rest";
+  const defaultArchitecture = "rest";
   if (options.skipPrompts) {
     return {
       ...options,
@@ -91,14 +92,15 @@ async function promptForMissingOptions(options) {
     type: "checkbox",
     name: "architecture",
     message: "Select the architecture with which you would like to work:",
-    choices: ["rest", "graphql", "grpc"]
+    choices: ["rest", "graphql", "grpc"],
+    default: defaultArchitecture
   });
   if (!options.template) {
     questions.push({
       type: "list",
       name: "template",
       message: "Please choose which project template to use",
-      choices: ["javascript", "typescript"],
+      choices: ["rest", "typescript"],
       default: defaultTemplate
     });
   }
