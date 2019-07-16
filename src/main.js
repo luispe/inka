@@ -9,6 +9,7 @@ import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
 import { getRoottDirectoryBase } from "./files";
+import { koa } from "./select-packages";
 
 const access = promisify(fs.access);
 const writeFile = promisify(fs.writeFile);
@@ -32,6 +33,13 @@ async function createGitignore(options) {
   });
 }
 
+async function addPackages(options) {
+  if (options.framework[0] == "koa") {
+    options.dependencies = koa.dependencies;
+    console.log(options.dependencies);
+  }
+}
+
 async function createPackageJson(options) {
   const targetPath = path.join(options.targetDirectory, "package.json");
   const data = {
@@ -47,11 +55,7 @@ async function createPackageJson(options) {
     }),
     author: options.author,
     license: options.license,
-    gitRepository: options.gitRepository,
-    dependencies: options.framework.reduce(
-      (pkg, version) => ({ ...pkg, [version]: undefined }),
-      {}
-    )
+    gitRepository: options.gitRepository
   };
   return writeFile(targetPath, JSON.stringify(data, null, " "));
 }
@@ -108,7 +112,14 @@ export async function createProject(options) {
     name: "LuisPe"
   };
 
-  const pkgInstall = options.framework.reduce(
+  // const pkgInstall = options.framework.reduce(
+  //   (pkg, version) => ({ ...pkg, [version]: undefined }),
+  //   {}
+  // );
+
+  addPackages(options);
+
+  const pkgInstall = options.dependencies.reduce(
     (pkg, version) => ({ ...pkg, [version]: undefined }),
     {}
   );
