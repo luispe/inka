@@ -5,9 +5,10 @@ import gitignore from "gitignore";
 import Listr from "listr";
 import ncp from "ncp";
 import path from "path";
-import { projectInstall } from "pkg-install";
+import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
+import { getRoottDirectoryBase } from "./files";
 
 const access = promisify(fs.access);
 const writeFile = promisify(fs.writeFile);
@@ -29,6 +30,30 @@ async function createGitignore(options) {
     type: "Node",
     file: file
   });
+}
+
+async function createPackageJson(options) {
+  const targetPath = path.join(options.targetDirectory, "package.json");
+  const data = {
+    name: options.name,
+    version: options.version,
+    description: options.description,
+    main: options.entryPoint,
+    scripts: {
+      test: 'echo "Error: no test specified" && exit 1'
+    },
+    keywords: options.keywords.split(",").map(function(item) {
+      return item.trim();
+    }),
+    author: options.author,
+    license: options.license,
+    gitRepository: options.gitRepository,
+    dependencies: options.framework.reduce(
+      (pkg, version) => ({ ...pkg, [version]: undefined }),
+      {}
+    )
+  };
+  return writeFile(targetPath, JSON.stringify(data, null, " "));
 }
 
 async function createLicense(options) {
@@ -57,10 +82,14 @@ export async function createProject(options) {
     name: "LuisPe"
   };
 
-  const currentFileUrl = import.meta.url;
+  const pkgInstall = options.framework.reduce(
+    (pkg, version) => ({ ...pkg, [version]: undefined }),
+    {}
+  );
+
   const templateDir = path.resolve(
-    new URL(currentFileUrl).pathname,
-    "../../templates",
+    getRoottDirectoryBase(),
+    "../templates",
     options.template.toLowerCase()
   );
   options.templateDirectory = templateDir;
@@ -83,6 +112,10 @@ export async function createProject(options) {
         task: () => createGitignore(options)
       },
       {
+        title: "Create package.json",
+        task: () => createPackageJson(options)
+      },
+      {
         title: "Create License",
         task: () => createLicense(options)
       },
@@ -93,10 +126,7 @@ export async function createProject(options) {
       },
       {
         title: "Install dependencies",
-        task: () =>
-          projectInstall({
-            cwd: options.targetDirectory
-          }),
+        task: () => install(pkgInstall, { cwd: options.targetDirectory }),
         skip: () =>
           !options.runInstall
             ? "Pass --install to automatically install dependencies"
