@@ -1,6 +1,7 @@
-exports.koa = {
+exports.koarest = {
   dependencies: [
     "dotenv",
+    "chalk",
     "glob",
     "koa",
     "koa-bodyparser",

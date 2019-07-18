@@ -9,7 +9,7 @@ import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
 import { getRoottDirectoryBase } from "./files";
-import { koa } from "./select-packages";
+import { koarest } from "./select-packages";
 
 const access = promisify(fs.access);
 const writeFile = promisify(fs.writeFile);
@@ -34,20 +34,20 @@ async function createGitignore(options) {
 }
 
 async function addPackages(options) {
-  if (options.framework[0] == "koa") {
-    options.dependencies = koa.dependencies;
-    console.log(options.dependencies);
+  if (options.framework == "koa") {
+    options.dependencies = koarest.dependencies;
   }
 }
 
 async function createPackageJson(options) {
   const targetPath = path.join(options.targetDirectory, "package.json");
   const data = {
-    name: options.name,
+    name: options.nameProject,
     version: options.version,
     description: options.description,
     main: options.entryPoint,
     scripts: {
+      start: `node ${options.entryPoint}` || "node main.js",
       test: 'echo "Error: no test specified" && exit 1'
     },
     keywords: options.keywords.split(",").map(function(item) {
@@ -64,7 +64,7 @@ async function createLicense(options) {
   const targetPath = path.join(options.targetDirectory, "LICENSE");
   const licenseContent = license.licenseText
     .replace("<year>", new Date().getFullYear())
-    .replace("<copyright holders>", `${options.name} (${options.email})`);
+    .replace("<copyright holders>", `${options.nameAuthor} (${options.email})`);
   return writeFile(targetPath, licenseContent, "utf8");
 }
 
@@ -109,14 +109,8 @@ export async function createProject(options) {
     ...options,
     targetDirectory: options.targetDirectory || process.cwd(),
     email: "luispedrotoloy@gmail.com",
-    name: "LuisPe"
+    nameAuthor: "LuisPe"
   };
-
-  // const pkgInstall = options.framework.reduce(
-  //   (pkg, version) => ({ ...pkg, [version]: undefined }),
-  //   {}
-  // );
-
   addPackages(options);
 
   const pkgInstall = options.dependencies.reduce(
