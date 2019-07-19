@@ -47,7 +47,7 @@ async function createPackageJson(options) {
     description: options.description,
     main: options.entryPoint,
     scripts: {
-      start: `node ${options.entryPoint}` || "node main.js",
+      start: `node ${options.entryPoint}`,
       test: 'echo "Error: no test specified" && exit 1'
     },
     keywords: options.keywords.split(",").map(function(item) {
