@@ -4,7 +4,7 @@ const bodyParser = require("koa-bodyparser");
 const Koa = require("koa");
 const logger = require("koa-logger");
 const helmet = require("koa-helmet");
-const routing = require("./api/routes/");
+const routing = require("./api/routes");
 const { port } = require("./config");
 
 // Create Koa Application
