@@ -1,9 +1,9 @@
 {
-  "name": "@luispe/create-api-project",
-  "version": "1.0.0",
+  "name": "inka",
+  "version": "0.1.0",
   "description": "A CLI to bootstrap my new projects",
   "main": "src/index.js",
-  "bin": "bin/create-api-project",
+  "bin": "bin/inka",
   "publishConfig": {
     "access": "public"
   },
@@ -12,7 +12,11 @@
   },
   "keywords": [
     "cli",
-    "create-api-project"
+    "inka",
+    "create API",
+    "rest",
+    "graphql",
+    "architecture"
   ],
   "author": "LuisPe <luispedrotoloy@gmail.com>",
   "license": "MIT",
