@@ -11,3 +11,13 @@ exports.koarest = {
     "lodash"
   ]
 };
+exports.expressrest = {
+  dependencies: [
+    "body-parser",
+    "chalk",
+    "dotenv",
+    "express",
+    "helmet",
+    "lodash"
+  ]
+};
