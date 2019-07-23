@@ -9,7 +9,7 @@ import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
 import { getRoottDirectoryBase } from "./files";
-import { koarest } from "./select-packages";
+import { koarest, expressrest } from "./select-packages";
 
 const access = promisify(fs.access);
 const writeFile = promisify(fs.writeFile);
@@ -34,8 +34,16 @@ async function createGitignore(options) {
 }
 
 async function addPackages(options) {
-  if (options.framework == "koa") {
-    options.dependencies = koarest.dependencies;
+  switch (options.framework) {
+    case "express":
+      options.dependencies = expressrest.dependencies;
+      break;
+    case "koa":
+      options.dependencies = koarest.dependencies;
+      break;
+    default:
+      options.dependencies = expressrest.dependencies;
+      break;
   }
 }
 
@@ -104,6 +112,20 @@ async function msgInit(options) {
   console.log();
 }
 
+async function assignTemplate(options) {
+  switch (options.framework) {
+    case "express":
+      options.template = "express-rest";
+      break;
+    case "koa":
+      options.template = "koa-rest";
+      break;
+
+    default:
+      options.template = "express-rest";
+      break;
+  }
+}
 export async function createProject(options) {
   options = {
     ...options,
@@ -111,12 +133,15 @@ export async function createProject(options) {
     email: "luispedrotoloy@gmail.com",
     nameAuthor: "LuisPe"
   };
-  addPackages(options);
+
+  await addPackages(options);
 
   const pkgInstall = options.dependencies.reduce(
     (pkg, version) => ({ ...pkg, [version]: undefined }),
     {}
   );
+
+  await assignTemplate(options);
 
   const templateDir = path.resolve(
     getRoottDirectoryBase(),
