@@ -5,7 +5,7 @@ import inquirer from "inquirer";
 import { createProject } from "./main";
 import { getCurrentDirectoryBase } from "./files";
 
-program.version("0.1.0");
+program.version("0.1.1");
 
 program
   .command("new <name>")
@@ -30,7 +30,6 @@ program
     };
 
     let resp = await promptForMissingOptions(options);
-    console.log(resp);
     await createProject(resp);
   });
 export async function cli() {
