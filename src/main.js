@@ -8,7 +8,7 @@ import path from "path";
 import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
-import { getRoottDirectoryBase } from "./files";
+import { getRoottDirectoryBase, fileExists, directoryExists } from "./files";
 import { koarest, expressrest } from "./select-packages";
 
 const access = promisify(fs.access);
@@ -17,6 +17,17 @@ const copy = promisify(ncp);
 const writeGitignore = promisify(gitignore.writeFile);
 
 async function copyTemplateFiles(options) {
+  if (directoryExists(".git") || fileExists("package.json")) {
+    console.log();
+    console.log(
+      chalk.red.bgWhite(
+        "Already a git repository or package.json, please verify that you are creating the project in an empty folder"
+      )
+    );
+    console.log();
+    process.exit(1);
+  }
+
   return copy(options.templateDirectory, options.targetDirectory, {
     clobber: false
   });
@@ -126,6 +137,7 @@ async function assignTemplate(options) {
       break;
   }
 }
+
 export async function createProject(options) {
   options = {
     ...options,

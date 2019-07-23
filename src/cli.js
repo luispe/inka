@@ -8,7 +8,7 @@ import { getCurrentDirectoryBase } from "./files";
 program.version("0.1.0");
 
 program
-  .command("new [name]")
+  .command("new <name>")
   .option(
     "-y, --yes",
     "Create a new project with the default configuration (framework: expressJs, architecture: REST, git init yes, install packages yes)"
@@ -25,11 +25,12 @@ program
       license: "ISC",
       gitRepository: "",
       git: false,
-      runInstall: false,
+      runInstall: true,
       framework: "express"
     };
 
     let resp = await promptForMissingOptions(options);
+    console.log(resp);
     await createProject(resp);
   });
 export async function cli() {

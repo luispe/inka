@@ -1,16 +1,11 @@
-# `@luispe/create-api-project`
+# `Inka`
 
-🏗 Personal CLI to bootstrap new projects
+CLI to create new projects with different boilerplates (express Js + rest, Koa + rest and more), proposing a suitable structure to have a better abstraction in the software layers.
 
 ## Installation & Usage
 
 ```bash
-npm init @luispe/project
-# or
-npx @luispe/create-api-project
-# or
-npm install -g @luispe/create-api-project
-create-api-project
+npm install inka
 ```
 
 ## License
