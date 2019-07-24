@@ -31,4 +31,4 @@ MIT
 
 ## Collaborators
 
-- LuisPe <luispedrotoloy@gmail.com>
+- LuisPe <https://github.com/LuisPe>
