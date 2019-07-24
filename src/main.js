@@ -16,6 +16,28 @@ const writeFile = promisify(fs.writeFile);
 const copy = promisify(ncp);
 const writeGitignore = promisify(gitignore.writeFile);
 
+async function createFolder(options) {
+  if (directoryExists(options.nameProject)) {
+    console.log();
+    console.log(
+      chalk.red.bold(
+        `already existed a directory with that ${
+          options.nameProject
+        }, please change the name of the project and try again`
+      )
+    );
+    console.log();
+    process.exit(1);
+  }
+  fs.mkdir(`${options.nameProject}`, { recursive: true }, err => {
+    if (err) {
+      console.log(chalk.red.bgWhite("The project could not be created"));
+    }
+  });
+  let posibleDir = `${process.cwd()}/${options.nameProject}`;
+  return posibleDir;
+}
+
 async function copyTemplateFiles(options) {
   if (directoryExists(".git") || fileExists("package.json")) {
     console.log();
@@ -139,9 +161,11 @@ async function assignTemplate(options) {
 }
 
 export async function createProject(options) {
+  let posibleDir = await createFolder(options);
+
   options = {
     ...options,
-    targetDirectory: options.targetDirectory || process.cwd(),
+    targetDirectory: posibleDir,
     email: "luispedrotoloy@gmail.com",
     nameAuthor: "LuisPe"
   };
