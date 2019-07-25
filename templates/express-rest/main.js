@@ -5,7 +5,7 @@ const express = require("express");
 const helmet = require("helmet");
 const { port } = require("./config");
 
-// Create Koa Application
+// Create Express Application
 const app = express();
 app.use(bodyParser.json()).use(helmet());
 

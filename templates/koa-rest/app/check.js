@@ -1,7 +1,12 @@
 module.exports = {
-  getCheck: ctx => {
-    ctx.body = {
-      message: `CLI using Koa, route ${ctx.originalUrl} everything working!`
-    };
+  check: async () => {
+    try {
+      let message = `CLI using KoaJs, route check ok, everything working!`;
+      let status = 200;
+      let resp = { status, message };
+      return resp;
+    } catch (error) {
+      throw Error(error);
+    }
   }
 };
