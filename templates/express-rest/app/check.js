@@ -1,12 +1,12 @@
-module.exports = function() {
-  async function getCheck(req, res) {
-    res.send({
-      message: `CLI using expressJs, route ${
-        req.originalUrl
-      } everything working!`
-    });
+module.exports = {
+  check: async () => {
+    try {
+      let message = `CLI using expressJs, route check ok, everything working!`;
+      let status = 200;
+      let resp = { status, message };
+      return resp;
+    } catch (error) {
+      throw Error(error);
+    }
   }
-  return {
-    getCheck
-  };
 };
