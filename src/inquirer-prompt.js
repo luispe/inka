@@ -49,7 +49,7 @@ export async function promptForMissingOptions(options) {
   questions.push({
     type: "input",
     name: "license",
-    default: "ISC",
+    default: "MIT",
     message: "License:"
   });
   questions.push({
