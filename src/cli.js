@@ -4,7 +4,7 @@ import program from "commander";
 import { createProject } from "./main";
 import { promptForMissingOptions } from "./inquirer-prompt";
 
-program.version("0.1.2");
+program.version("0.1.3");
 
 program
   .command("new <name>")

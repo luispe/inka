@@ -1,11 +1,9 @@
 module.exports = function(app) {
   const express = require("express");
   const router = express.Router();
-  const checkController = require("../../app/check.js")();
-
+  const respCheck = require("../check");
   // Route for check listen API /check => GET
-  router.get("/check", checkController.getCheck);
-  router.post("/check", checkController.getCheck);
+  router.get("/check", respCheck.getCheck);
 
   app.use("/", router);
 };
