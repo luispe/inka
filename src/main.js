@@ -123,7 +123,11 @@ async function msgInit(options) {
   console.log();
   console.log("Initialized a git repository.");
   console.log();
-  console.log(`Success! Created project at ${options.targetDirectory}`);
+  console.log(
+    `Success! Created project ${chalk.cyan(
+      options.nameProject
+    )} at ${chalk.cyan(options.targetDirectory)}`
+  );
   console.log("Inside that directory, you can run commands:");
   console.log();
   console.log(
@@ -138,7 +142,7 @@ async function msgInit(options) {
   console.log();
   console.log("We suggest that you begin by typing:");
   console.log();
-  console.log(chalk.cyan("   cd "), `${options.targetDirectory}`);
+  console.log(chalk.cyan("   cd"), `${options.nameProject}`);
   console.log(chalk.cyan("   npm start"));
   console.log();
   console.log("Happy coding!");
