@@ -87,7 +87,7 @@ export async function promptForMissingOptions(options) {
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
-    nameProject: answers.nameProject,
+    nameProject: answers.nameProject.trim().replace(/\s/g, "-"),
     description: answers.description,
     entryPoint: answers.entryPoint,
     gitRepository: answers.gitRepository,
