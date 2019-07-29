@@ -6,6 +6,7 @@ const logger = require("koa-logger");
 const helmet = require("koa-helmet");
 const routing = require("./api/routes");
 const { port } = require("./config");
+const errorHandler = require("./app/middlewares/errorHandler");
 
 // Create Koa Application
 const app = new Koa();
@@ -15,6 +16,7 @@ app
   .use(helmet());
 
 routing(app);
+errorHandler(app);
 
 // Start the application
 app.listen(port, () => console.log(chalk.cyan(`App listen on port: ${port}`)));
