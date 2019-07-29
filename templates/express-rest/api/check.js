@@ -1,11 +1,11 @@
 const checkController = require("../app/check");
 module.exports = {
-  getCheck: async (req, res) => {
+  getCheck: async (req, res, next) => {
     try {
       let resp = await checkController.check();
-      res.status(resp.status).json(resp.message);
+      res.status(resp.statusCode).json(resp.message);
     } catch (error) {
-      return res.status(500).json(error.message);
+      next(error);
     }
   }
 };
