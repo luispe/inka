@@ -8,8 +8,12 @@ import path from "path";
 import { install } from "pkg-install";
 import license from "spdx-license-list/licenses/MIT";
 import { promisify } from "util";
-import { getRoottDirectoryBase, fileExists, directoryExists } from "./files";
-import { koarest, expressrest } from "./select-packages";
+import {
+  getRoottDirectoryBase,
+  fileExists,
+  directoryExists
+} from "../../files";
+import { koarest, expressrest } from "../../select-packages";
 
 const access = promisify(fs.access);
 const writeFile = promisify(fs.writeFile);

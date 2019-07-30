@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/bin/inka",
-      "args": ["new", "myapp"],
+      "args": ["new", "myAppó app"],
       "console": "integratedTerminal"
     }
   ]
