@@ -15,6 +15,10 @@ export async function promptForMissingOptions(options) {
     name: "nameProject",
     message: "Press ^C at any time to quit.\nproject name:",
     default: options.nameProject
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s/g, "-")
+      .toLowerCase()
   });
   questions.push({
     type: "input",
@@ -87,7 +91,11 @@ export async function promptForMissingOptions(options) {
   const answers = await inquirer.prompt(questions);
   return {
     ...options,
-    nameProject: answers.nameProject.trim().replace(/\s/g, "-"),
+    nameProject: answers.nameProject
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s/g, "-")
+      .toLowerCase(),
     description: answers.description,
     entryPoint: answers.entryPoint,
     gitRepository: answers.gitRepository,
