@@ -1,0 +1,98 @@
+{
+  "apiFile": {
+    "description": "Edit this template if you want to modify the final content of layer API",
+    "express": {
+      "rest": [
+        "const {{name}}Controller = require (\"../app/{{name}}\");",
+        "module.exports = {",
+        "  callFunc: async (req, res, next) => {",
+        "    try {",
+        "      let resp = await {{name}}Controller.check();",
+        "      res.status(resp.statusCode).json(resp.message);",
+        "    } catch (error) {",
+        "      next(error);",
+        "    }",
+        "  }",
+        "};"
+      ]
+    },
+    "koa": {
+      "rest": [
+        "const {{name}}Controller = require (\"../app/{{name}}\");",
+        "module.exports = {",
+        "  callFunc: async (req, res, next) => {",
+        "    try {",
+        "      let resp = await {{name}}Controller.check();",
+        "      ctx.status = resp.status;",
+        "      ctx.body = resp.message;",
+        "    } catch (error) {",
+        "      ctx.throw(500, error.message);",
+        "    }",
+        "  }",
+        "};"
+      ]
+    }
+  },
+  "routeFile": {
+    "description": "Edit this template if you want to modify the final content of layer API (route)",
+    "express": {
+      "rest": [
+        "module.exports = function(app) {",
+        "  const express = require(\"express\");",
+        "  const resp{{name}} = require(\"../{{name}}\");",
+        "  // Route for {{name}} listen API /{{name}} => GET",
+        "  router.get(\"/{{route}}\", resp{{name}}.callFunc);",
+        "",
+        "  app.use(\"/\", router);",
+        "};"
+      ]
+    },
+    "koa": {
+      "rest": [
+        "const Router = require(\"koa-router\");",
+        "const respCheck = require(\"../check\");",
+        "const router = new Router();",
+        "",
+        "// Route for check listen API /check => GET",
+        "router.get(\"/check\", respCheck.getCheck);",
+        "",
+        "module.exports = router;"
+      ]
+    }
+  },
+  "appFile": {
+    "description": "Edit this template if you want to modify the final content of layer APP",
+    "express": {
+      "rest": [
+        "module.exports = {",
+        "  check: async () => {",
+        "    try {",
+        "      let message = \"{{name}} Controller generate with inka CLI\";",
+        "      let statusCode = 200;",
+        "      let resp = { statusCode, message };",
+        "      return resp;",
+        "    } catch (error) {",
+        "      throw Error(error);",
+        "    }",
+        "  }",
+        "};"
+      ]
+    },
+    "koa": {
+      "rest": [
+        "module.exports = {",
+        "  check: async () => {",
+        "    try {",
+        "      let message = \"{{name}} Controller generate with inka CLI\";",
+        "      let statusCode = 200;",
+        "      let resp = { statusCode, message };",
+        "      return resp;",
+        "    } catch (error) {",
+        "      throw Error(error);",
+        "    }",
+        "  }",
+        "};"
+      ]
+    }
+  }
+}

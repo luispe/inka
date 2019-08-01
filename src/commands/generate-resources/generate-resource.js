@@ -1,30 +1,44 @@
 import chalk from "chalk";
-// import execa from "execa";
 import fs from "fs";
-// import gitignore from "gitignore";
 import Listr from "listr";
-import ncp from "ncp";
 import path from "path";
-// import { install } from "pkg-install";
-// import license from "spdx-license-list/licenses/MIT";
-import { promisify } from "util";
 import {
-  getRoottDirectoryBase,
   fileExists,
-  directoryExists
+  getRoottDirectoryBase,
+  getCurrentDirectoryBase
 } from "../../files";
-// import { koarest, expressrest } from "../../select-packages";
 
-// const access = promisify(fs.access);
-const writeFile = promisify(fs.writeFile);
-// const copy = promisify(ncp);
+import { findUp } from "../../find-up";
 
-async function targetDirectory() {
-  let apiDir = `${process.cwd()}/api`;
-  let routesDir = `${process.cwd()}/api/routes`;
-  let appDir = `${process.cwd()}/app`;
-  let posibleDir = { apiDir, routesDir, appDir };
-  return posibleDir;
+async function readProjectConfiguration() {
+  let _configFileNames = ["inka.json"];
+
+  let posibleDir = findUp(_configFileNames, process.cwd());
+  if (!posibleDir) {
+    return null;
+  }
+
+  // let wordsPath = posibleDir.split("inka.json");
+
+  // let pathDir = wordsPath[0];
+
+  let file = fs.readFileSync(posibleDir, "utf8");
+  let configProject = JSON.parse(file);
+  return configProject;
+  // let projectJson = JSON.parse(file);
+  // if (projectJson) {
+  //   let apiPath = projectJson.project.apiPath.root;
+  //   let routesPath = projectJson.project.apiPath.routePath;
+  //   let appPath = projectJson.project.appPath.root;
+
+  //   apiPath = `${pathDir}${apiPath}`;
+  //   routesPath = `${pathDir}${routesPath}`;
+  //   appPath = `${pathDir}${appPath}`;
+
+  //   let configProject = { apiPath, routesPath, appPath };
+  //   return configProject;
+  // }
+  // return null;
 }
 
 async function createApiFile(targetDirectory, name) {
@@ -88,50 +102,58 @@ async function createAppFile(targetDirectory, name) {
 }
 
 async function createResourceFiles(options) {
-  let posibleDir = await targetDirectory();
+  let configProject = await readProjectConfiguration();
+  console.log(configProject);
 
-  if (
-    fileExists(`${posibleDir.apiDir}/${options}.js`) ||
-    fileExists(`${posibleDir.app}/${options}.js`) ||
-    fileExists(`${posibleDir.routesDir}/${options}.js`)
-  ) {
-    console.log();
+  if (!configProject) {
     console.log(
       chalk.red.bold(
-        `already exist a resource with name ${options}.js, please change the name of the resource and try again`
+        `The generate command requires to be run in an Inka project`
       )
     );
-    console.log();
     process.exit(1);
   }
 
-  const tasks = new Listr(
-    [
-      {
-        title: "Create api file",
-        task: () => createApiFile(posibleDir.apiDir, options)
-      },
-      {
-        title: "Create route file",
-        task: () => createRoute(posibleDir.routesDir, options)
-      },
-      {
-        title: "Create app file",
-        task: () => createAppFile(posibleDir.appDir, options)
-      }
-    ],
-    {
-      exitOnError: false
-    }
-  );
+  // if (
+  //   fileExists(`${posibleDir.apiPath}/${options}.js`) ||
+  //   fileExists(`${posibleDir.routesPath}/${options}.js`) ||
+  //   fileExists(`${posibleDir.appPath}/${options}.js`)
+  // ) {
+  //   console.log(
+  //     chalk.red.bold(
+  //       `Already exist a resource with name ${options}.js, please change the name of the resource and try again`
+  //     )
+  //   );
+  //   process.exit(1);
+  // }
 
-  await tasks.run();
-  console.log(chalk.green.bold("DONE"), `${posibleDir.apiDir}/${options}.js`);
-  console.log(
-    chalk.green.bold("DONE"),
-    `${posibleDir.routesDir}/${options}.js`
-  );
-  console.log(chalk.green.bold("DONE"), `${posibleDir.appDir}/${options}.js`);
+  // const tasks = new Listr(
+  //   [
+  //     {
+  //       title: "Create api file",
+  //       task: () => createApiFile(posibleDir.apiDir, options)
+  //     },
+  //     {
+  //       title: "Create route file",
+  //       task: () => createRoute(posibleDir.routesDir, options)
+  //     },
+  //     {
+  //       title: "Create app file",
+  //       task: () => createAppFile(posibleDir.appDir, options)
+  //     }
+  //   ],
+  //   {
+  //     exitOnError: false
+  //   }
+  // );
+
+  // await tasks.run();
+  // console.log(chalk.green.bold("DONE"), `${posibleDir.apiDir}/${options}.js`);
+  // console.log(
+  //   chalk.green.bold("DONE"),
+  //   `${posibleDir.routesDir}/${options}.js`
+  // );
+  // console.log(chalk.green.bold("DONE"), `${posibleDir.appDir}/${options}.js`);
 }
 
 export async function createResource(options) {
