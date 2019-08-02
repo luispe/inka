@@ -39,9 +39,10 @@
       "rest": [
         "module.exports = function(app) {",
         "  const express = require(\"express\");",
+        "  const router = express.Router();",
         "  const resp{{name}} = require(\"../{{name}}\");",
         "  // Route for {{name}} listen API /{{name}} => GET",
-        "  router.get(\"/{{route}}\", resp{{name}}.callFunc);",
+        "  router.get(\"/{{name}}\", resp{{name}}.callFunc);",
         "",
         "  app.use(\"/\", router);",
         "};"
@@ -50,11 +51,11 @@
     "koa": {
       "rest": [
         "const Router = require(\"koa-router\");",
-        "const respCheck = require(\"../check\");",
+        "const resp{{name}} = require(\"../{{name}}\");",
         "const router = new Router();",
         "",
         "// Route for check listen API /check => GET",
-        "router.get(\"/check\", respCheck.getCheck);",
+        "router.get(\"/{{name}}\", resp{{name}}.callFunc);",
         "",
         "module.exports = router;"
       ]
