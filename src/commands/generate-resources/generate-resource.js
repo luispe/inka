@@ -138,8 +138,6 @@ async function createResourceFiles(options) {
     process.exit(1);
   }
 
-  console.log(configProject.pathFiles);
-
   const tasks = new Listr(
     [
       {

@@ -1,6 +1,6 @@
 {
   "name": "inka",
-  "version": "0.1.4-rc.1",
+  "version": "0.1.4-rc.2",
   "description": "Inka, in Mapuche 'friend who helps'. Inka CLI that tries to help you create API projects in NodeJs by suggesting a project structure that helps you focus on each system layer",
   "main": "src/index.js",
   "bin": "bin/inka",
