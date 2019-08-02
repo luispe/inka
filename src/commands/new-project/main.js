@@ -105,6 +105,25 @@ async function createPackageJson(options) {
   return writeFile(targetPath, JSON.stringify(data, null, " "));
 }
 
+async function createInkaJson(options) {
+  const targetPath = path.join(options.targetDirectory, "inka.json");
+  const data = {
+    project: {
+      framework: options.framework,
+      architect: options.architecture,
+      apiPath: {
+        root: "api",
+        routePath: "api/routes"
+      },
+      appPath: {
+        root: "app"
+      }
+    }
+  };
+
+  return writeFile(targetPath, JSON.stringify(data, null, " "));
+}
+
 async function createLicense(options) {
   const targetPath = path.join(options.targetDirectory, "LICENSE");
   const licenseContent = license.licenseText
@@ -214,6 +233,10 @@ export async function createProject(options) {
       {
         title: "Create package.json",
         task: () => createPackageJson(options)
+      },
+      {
+        title: "Create inka.json",
+        task: () => createInkaJson(options)
       },
       {
         title: "Create License",
