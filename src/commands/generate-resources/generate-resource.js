@@ -1,123 +1,158 @@
 import chalk from "chalk";
-// import execa from "execa";
 import fs from "fs";
-// import gitignore from "gitignore";
 import Listr from "listr";
-import ncp from "ncp";
 import path from "path";
-// import { install } from "pkg-install";
-// import license from "spdx-license-list/licenses/MIT";
-import { promisify } from "util";
 import {
-  getRoottDirectoryBase,
   fileExists,
-  directoryExists
+  getRoottDirectoryBase,
+  getCurrentDirectoryBase
 } from "../../files";
-// import { koarest, expressrest } from "../../select-packages";
 
-// const access = promisify(fs.access);
-const writeFile = promisify(fs.writeFile);
-// const copy = promisify(ncp);
+import { findUp } from "../../find-up";
 
-async function targetDirectory() {
-  let apiDir = `${process.cwd()}/api`;
-  let routesDir = `${process.cwd()}/api/routes`;
-  let appDir = `${process.cwd()}/app`;
-  let posibleDir = { apiDir, routesDir, appDir };
-  return posibleDir;
-}
+async function readProjectConfiguration() {
+  let _configFileNames = ["inka.json"];
 
-async function createApiFile(targetDirectory, name) {
-  const file = fs.createWriteStream(path.join(targetDirectory, `${name}.js`), {
-    flags: "a"
-  });
-  file.write(`const ${name}Controller = require ("../app/${name}");
-  module.exports = {
-    callFunc: async (req, res, next) => {
-      try {
-        let resp = await ${name}Controller.check();
-        res.status(resp.statusCode).json(resp.message);
-      } catch (error) {
-        next(error);
-      }
-    }
-  };
-  `);
-  file.end();
-  return;
-}
-
-async function createRoute(targetDirectory, name) {
-  const file = fs.createWriteStream(path.join(targetDirectory, `${name}.js`), {
-    flags: "a"
-  });
-  let route = name.toLowerCase();
-  file.write(`module.exports = function(app) {
-  const express = require("express");
-  const router = express.Router();
-  const resp${name} = require("../${name}");
-  // Route for ${name} listen API /${name} => GET
-  router.get("/${route}", resp${name}.callFunc);
-
-  app.use("/", router);
-};
-  `);
-  file.end();
-  return;
-}
-
-async function createAppFile(targetDirectory, name) {
-  const file = fs.createWriteStream(path.join(targetDirectory, `${name}.js`), {
-    flags: "a"
-  });
-  file.write(`module.exports = {
-  check: async () => {
-    try {
-      let message = '${name} Controller generate with inka CLI';
-      let statusCode = 200;
-      let resp = { statusCode, message };
-      return resp;
-    } catch (error) {
-      throw Error(error);
-    }
+  let posibleDir = findUp(_configFileNames, process.cwd());
+  if (!posibleDir) {
+    return null;
   }
-};
-  `);
-  file.end();
+
+  let wordsPath = posibleDir.split("inka.json");
+  let configPath = wordsPath[0];
+
+  let file = fs.readFileSync(posibleDir, "utf8");
+  let configProject = JSON.parse(file);
+
+  if (configProject) {
+    let apiPath = configProject.project.apiPath.root;
+    let routesPath = configProject.project.apiPath.routePath;
+    let appPath = configProject.project.appPath.root;
+
+    apiPath = `${configPath}${apiPath}`;
+    routesPath = `${configPath}${routesPath}`;
+    appPath = `${configPath}${appPath}`;
+
+    let pathFiles = { apiPath, routesPath, appPath };
+
+    return { configProject, pathFiles };
+  }
+  return null;
+}
+
+async function createApiFile(configFile, name) {
+  let targetDirectory = configFile.pathFiles.apiPath;
+  let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
+  let schemaObject = JSON.parse(schema);
+  let framework = configFile.configProject.project.framework;
+  let architect = configFile.configProject.project.architect;
+
+  let nameReplace = new RegExp("{{name}}", "g");
+  if (framework in schemaObject.apiFile) {
+    const file = fs.createWriteStream(
+      path.join(targetDirectory, `${name}.js`),
+      {
+        flags: "a"
+      }
+    );
+    schemaObject.apiFile[framework][architect].map(value => {
+      file.write(value.replace(nameReplace, name) + "\r\n");
+    });
+    file.end();
+  }
+  return;
+}
+
+async function createRoute(configFile, name) {
+  let targetDirectory = configFile.pathFiles.routesPath;
+  let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
+  let schemaObject = JSON.parse(schema);
+  let framework = configFile.configProject.project.framework;
+  let architect = configFile.configProject.project.architect;
+
+  let nameReplace = new RegExp("{{name}}", "g");
+
+  if (framework in schemaObject.routeFile) {
+    const file = fs.createWriteStream(
+      path.join(targetDirectory, `${name}.js`),
+      {
+        flags: "a"
+      }
+    );
+    schemaObject.routeFile[framework][architect].map(value => {
+      file.write(value.replace(nameReplace, name) + "\r\n");
+    });
+    file.end();
+  }
+
+  return;
+}
+
+async function createAppFile(configFile, name) {
+  let targetDirectory = configFile.pathFiles.appPath;
+  let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
+  let schemaObject = JSON.parse(schema);
+  let framework = configFile.configProject.project.framework;
+  let architect = configFile.configProject.project.architect;
+
+  let nameReplace = new RegExp("{{name}}", "g");
+
+  if (framework in schemaObject.appFile) {
+    const file = fs.createWriteStream(
+      path.join(targetDirectory, `${name}.js`),
+      {
+        flags: "a"
+      }
+    );
+    schemaObject.appFile[framework][architect].map(value => {
+      file.write(value.replace(nameReplace, name) + "\r\n");
+    });
+    file.end();
+  }
+
   return;
 }
 
 async function createResourceFiles(options) {
-  let posibleDir = await targetDirectory();
+  let configProject = await readProjectConfiguration();
 
-  if (
-    fileExists(`${posibleDir.apiDir}/${options}.js`) ||
-    fileExists(`${posibleDir.app}/${options}.js`) ||
-    fileExists(`${posibleDir.routesDir}/${options}.js`)
-  ) {
-    console.log();
+  if (!configProject) {
     console.log(
       chalk.red.bold(
-        `already exist a resource with name ${options}.js, please change the name of the resource and try again`
+        `The generate command requires to be run in an Inka project`
       )
     );
-    console.log();
     process.exit(1);
   }
+
+  if (
+    fileExists(`${configProject.pathFiles.apiPath}/${options}.js`) ||
+    fileExists(`${configProject.pathFiles.routesPath}/${options}.js`) ||
+    fileExists(`${configProject.pathFiles.appPath}/${options}.js`)
+  ) {
+    console.log(
+      chalk.red.bold(
+        `Already exist a resource with name ${options}.js, please change the name of the resource and try again`
+      )
+    );
+    process.exit(1);
+  }
+
+  console.log(configProject.pathFiles);
 
   const tasks = new Listr(
     [
       {
         title: "Create api file",
-        task: () => createApiFile(posibleDir.apiDir, options)
+        task: () => createApiFile(configProject, options)
       },
       {
         title: "Create route file",
-        task: () => createRoute(posibleDir.routesDir, options)
+        task: () => createRoute(configProject, options)
       },
       {
         title: "Create app file",
-        task: () => createAppFile(posibleDir.appDir, options)
+        task: () => createAppFile(configProject, options)
       }
     ],
     {
@@ -126,12 +161,18 @@ async function createResourceFiles(options) {
   );
 
   await tasks.run();
-  console.log(chalk.green.bold("DONE"), `${posibleDir.apiDir}/${options}.js`);
   console.log(
     chalk.green.bold("DONE"),
-    `${posibleDir.routesDir}/${options}.js`
+    `${configProject.pathFiles.apiPath}/${options}.js`
   );
-  console.log(chalk.green.bold("DONE"), `${posibleDir.appDir}/${options}.js`);
+  console.log(
+    chalk.green.bold("DONE"),
+    `${configProject.pathFiles.routesPath}/${options}.js`
+  );
+  console.log(
+    chalk.green.bold("DONE"),
+    `${configProject.pathFiles.appPath}/${options}.js`
+  );
 }
 
 export async function createResource(options) {
