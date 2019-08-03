@@ -2,12 +2,7 @@ import chalk from "chalk";
 import fs from "fs";
 import Listr from "listr";
 import path from "path";
-import {
-  fileExists,
-  getRoottDirectoryBase,
-  getCurrentDirectoryBase
-} from "../../files";
-
+import { fileExists } from "../../files";
 import { findUp } from "../../find-up";
 
 async function readProjectConfiguration() {
@@ -40,77 +35,39 @@ async function readProjectConfiguration() {
   return null;
 }
 
-async function createApiFile(configFile, name) {
-  let targetDirectory = configFile.pathFiles.apiPath;
+async function createFile(configFile, typeFile, typePath, name) {
+  let targetDirectory = configFile.pathFiles[typePath];
   let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
   let schemaObject = JSON.parse(schema);
   let framework = configFile.configProject.project.framework;
   let architect = configFile.configProject.project.architect;
 
   let nameReplace = new RegExp("{{name}}", "g");
-  if (framework in schemaObject.apiFile) {
+  if (framework in schemaObject[typeFile]) {
     const file = fs.createWriteStream(
       path.join(targetDirectory, `${name}.js`),
       {
         flags: "a"
       }
     );
-    schemaObject.apiFile[framework][architect].map(value => {
+    schemaObject[typeFile][framework][architect].map(value => {
       file.write(value.replace(nameReplace, name) + "\r\n");
     });
     file.end();
   }
   return;
+}
+
+async function createApiFile(configFile, name) {
+  return await createFile(configFile, "apiFile", "apiPath", name);
 }
 
 async function createRoute(configFile, name) {
-  let targetDirectory = configFile.pathFiles.routesPath;
-  let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
-  let schemaObject = JSON.parse(schema);
-  let framework = configFile.configProject.project.framework;
-  let architect = configFile.configProject.project.architect;
-
-  let nameReplace = new RegExp("{{name}}", "g");
-
-  if (framework in schemaObject.routeFile) {
-    const file = fs.createWriteStream(
-      path.join(targetDirectory, `${name}.js`),
-      {
-        flags: "a"
-      }
-    );
-    schemaObject.routeFile[framework][architect].map(value => {
-      file.write(value.replace(nameReplace, name) + "\r\n");
-    });
-    file.end();
-  }
-
-  return;
+  return await createFile(configFile, "routeFile", "routesPath", name);
 }
 
 async function createAppFile(configFile, name) {
-  let targetDirectory = configFile.pathFiles.appPath;
-  let schema = fs.readFileSync(`${__dirname}/schema.json`, "utf8");
-  let schemaObject = JSON.parse(schema);
-  let framework = configFile.configProject.project.framework;
-  let architect = configFile.configProject.project.architect;
-
-  let nameReplace = new RegExp("{{name}}", "g");
-
-  if (framework in schemaObject.appFile) {
-    const file = fs.createWriteStream(
-      path.join(targetDirectory, `${name}.js`),
-      {
-        flags: "a"
-      }
-    );
-    schemaObject.appFile[framework][architect].map(value => {
-      file.write(value.replace(nameReplace, name) + "\r\n");
-    });
-    file.end();
-  }
-
-  return;
+  return await createFile(configFile, "appFile", "appPath", name);
 }
 
 async function createResourceFiles(options) {
