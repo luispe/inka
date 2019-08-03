@@ -20,10 +20,10 @@
       "rest": [
         "const {{name}}Controller = require (\"../app/{{name}}\");",
         "module.exports = {",
-        "  callFunc: async (req, res, next) => {",
+        "  callFunc: async ctx => {",
         "    try {",
         "      let resp = await {{name}}Controller.check();",
-        "      ctx.status = resp.status;",
+        "      ctx.status = resp.statusCode;",
         "      ctx.body = resp.message;",
         "    } catch (error) {",
         "      ctx.throw(500, error.message);",
